@@ -6,5 +6,5 @@
 
 > ```python -m http.server```
 
-* Then on the command promp u will see the retured url address go on that address u will see your file ```**html``` open that
+* Then on the command promp u will see the retured url address go on that address u will see your file ```**.html``` open that
 * Then press on keyboard ```Ctrl+Shift+I ```
