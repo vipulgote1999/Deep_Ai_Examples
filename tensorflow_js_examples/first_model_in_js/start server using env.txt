@@ -1,0 +1,14 @@
+**us should have python 3.6+**
+*then open cmd through the directory in which all required files is saved 
+
+* you have to create a local server on your machine for running this files
+* there are two for creating the local server using 
+	1. using chrome plugin or extension just search on google **200 ok web server for chrome**
+	  or link is mentioed here also 
+	  https://chrome.google.com/webstore/detail/web-server-for-chrome/ofhbbkphhbklhfoeikjpcbhemlocgigb?hl=en
+	
+	2. Otherwise u can use your python through cmd to create server 
+	   make sure that u are navigate to same directory path on which all required/project files contain
+	   for there do following
+		here is the command for that
+		```>python -m http.server ```

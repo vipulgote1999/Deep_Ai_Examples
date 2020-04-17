@@ -1,0 +1,63 @@
+<html>
+    <head>
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+        <!-- Import tfjs-vis -->
+        <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.0.2/dist/tfjs-vis.umd.min.js"></script>
+
+<script lang="js">
+    async function run()
+    {
+            const csvURL='iris_test.csv';
+            const training_data=tf.data.csv(csvURL,{
+                columnConfigs: 
+                {
+                    species: {
+                        isLabel : true  
+                            }
+                }
+            });
+    const lengthOfFeature = (await training_data.columnNames()).length - 1;
+    const numOfSamples = 150;
+    const convertedData = training_data.map(({xs,ys}) => {
+        const labels=[
+                ys.species == "setosa" ? 1 : 0 ,
+                ys.species == "virginica" ? 1 : 0,
+                ys.species == "versicolor" ? 1:0
+                    ]
+        return {xs: Object.values(xs), ys: Object.values(labels)};
+    }).batch(10);
+    
+    const model=tf.sequential();
+    model.add(tf.layers.dense({inputShape: [lengthOfFeature],activation:'sigmoid',units:5}));
+    model.add(tf.layers.dense({units:3,activation: "softmax"}));
+
+    model.compile({
+        optimizer : tf.train.adam(0.01),
+        loss: 'categoricalCrossentropy',
+        metrics: ["accuracy"]
+    });
+
+    await model.fitDataset(convertedData,
+            {
+            epochs:100,
+            callbacks: {
+                onEpochEnd: async(epoch,logs) => {
+                    console.log("epoch:"+epoch +"loss: "+logs.loss);
+                }
+            }
+            });
+    
+    const testVal = tf.tensor2d([4.4, 2.9, 1.4, 0.2], [1,4]);
+
+    const prediction=model.predict(testVal);
+    const pIndex=tf.argMax(prediction,axis=1).dataSync();
+
+    const classNames = ["setosa","Virginica", "Versicolor"];
+
+    alert(classNames[pIndex])
+
+    }
+    run();
+</script>
+    </head>
+</html>

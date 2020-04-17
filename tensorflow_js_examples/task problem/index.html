@@ -1,0 +1,95 @@
+<html>
+<head>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest">
+/// this the link of tfjs lib so that u can use tf packages for building model and do preprocessing 
+</script>
+<script lang="js">
+    async function run(){
+
+        ///loading training of breast cancer data 
+        ///here we are predicting the patient has breast cancer or not
+        ///diagnosis is label which has (0: Negative and 1: Positive)
+       const dataURL='train.csv';
+       const training_data=tf.data.csv(dataURL,{hasHeader:true,
+           columnConfigs:{
+            'diagnosis':{
+                isLabel: true
+            }
+           }
+       });
+       ////loading testing data 
+       testURL='test.csv'
+       const testingData=tf.data.csv(testURL,{hasHeader:true,
+            columnConfigs:{
+                'diagnosis':{
+                    isLabel:true
+                }
+            }
+       });
+
+       const lengthOfFeatures=(await training_data.columnNames()).length - 1;
+       console.log(lengthOfFeatures); ///output = 30
+       const noOfSamples=455;
+
+       ///// converting train.csv file to xlabel and ylabel for train data 
+       const convertData = training_data.map(row => {
+            const rawFeatureas=row['xs'];
+            const rawLabel= row['ys'];
+            const convertedFeatures = Object.values(rawFeatureas);
+
+            const convertedLabel = [rawLabel['diagnosis']];
+            return {xs:convertedFeatures,ys:convertedLabel}
+       }).batch(5);
+
+        ////converting test.csv to xlabel and ylabel for test data 
+
+       const validationData1= testingData.map(row => {
+           const rawFeatureas=row['xs'];
+           const rawLabel = row['ys'];
+           const convertedFeatures = Object.values(rawFeatureas);
+
+           const convertedLabel = [rawLabel['diagnosis']];
+
+           return { xs: convertedFeatures,ys: convertedLabel}
+       }).batch(5);
+
+
+
+        /////////////////////////////////////////
+        ///previous code for converting data not worked for this type of data so new code is used
+       /*const convertData = training_data.map(({xs,ys}) =>{
+           const label=[ys['diagnosis']];
+           const convertedFeatures=object.values(xs)
+           return { xs :convertedFeatures , ys : label}; //error line 
+       }).batch(5);*/
+        ////////////////////////////////////////////
+        const model=tf.sequential();
+        model.add(tf.layers.dense({inputShape:[lengthOfFeatures],units:10,activation:'relu'}));
+        model.add(tf.layers.dropout({rate:0.1}));///we add change parameter of dense to control overfitting 
+        model.add(tf.layers.dense({units:2,activation:'relu'}));//also we can use regulization this just 
+        model.summary()
+        model.compile({
+            optimizer:tf.train.adam(0.01),
+            loss: 'meanSquaredError',
+            metrics:['acc']
+        });
+
+    await model.fitDataset(convertData,
+    {
+        epochs:50,
+        validationData:validationData1,///achieved 87% val acc
+        callbacks:{
+            onEpochEnd :async(epoch,logs)=>{
+                console.log("epochs: "+epoch+" loss: "+logs.loss + " Accuracy: " +logs.acc);
+            }
+        }
+    });
+    }
+run()
+</script>
+</head>
+
+<body>
+    
+</body>
+</html>
