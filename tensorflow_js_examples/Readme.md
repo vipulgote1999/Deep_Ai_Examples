@@ -8,3 +8,6 @@
 
 * Then on the command promp u will see the retured url address go on that address u will see your file ```**.html``` open that
 * Then press on keyboard ```Ctrl+Shift+I ```
+
+
+##if u still having some problem go first open [first_model_in_js](https://github.com/vipulgote1999/Deep_Ai_Examples/tree/master/tensorflow_js_examples/first_model_in_js) file run that one first then proceed forward 
