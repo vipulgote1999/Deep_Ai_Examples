@@ -1,4 +1,4 @@
 # Deeplearning.ai Examples 
-* If u like the reop pls give star to it.
+* If u like the repository please give star to it.
 
 
